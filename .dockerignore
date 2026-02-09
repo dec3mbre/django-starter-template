@@ -29,3 +29,17 @@ src/media/*
 
 # Docker
 .dockerignore
+Dockerfile
+docker-compose*.yml
+
+# Git
+.git/
+.gitignore
+
+# Project files not needed in image
+Makefile
+README.md
+*.md
+docs/
+scripts/
+.ruff_cache/

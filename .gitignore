@@ -130,3 +130,9 @@ staticfiles/
 ## Secrets
 *.pem
 *.key
+
+## Tool caches
+.ruff_cache/
+
+## Frontend (future-proofing)
+node_modules/
