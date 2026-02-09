@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN pip install --no-cache-dir uv
 
-WORKDIR /build
+WORKDIR /app
 
 COPY pyproject.toml uv.lock ./
 RUN uv sync --no-dev --group prod --no-install-project
@@ -30,7 +30,7 @@ RUN groupadd -r django && useradd -r -g django -d /app -s /sbin/nologin django
 WORKDIR /app
 
 # Copy venv from builder
-COPY --from=builder /build/.venv /app/.venv
+COPY --from=builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Copy project
