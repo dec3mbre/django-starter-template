@@ -1,4 +1,4 @@
-.PHONY: run migrate sync clean lint format shell superuser collectstatic docker-up docker-down
+.PHONY: run migrate sync lock clean lint format shell superuser collectstatic docker-up docker-down docker-logs
 
 # ---------------------------------------------------------------------------
 # Development

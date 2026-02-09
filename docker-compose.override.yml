@@ -5,11 +5,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    command: /app/.venv/bin/python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - venv_data:/app/.venv
     environment:
       - DEBUG=True
       - SECRET_KEY=dev-only-insecure-key
       - DATABASE_URL=postgres://django:django@db:5432/django_app
-      - LOG_LEVEL=DEBUG
+      - LOG_LEVEL=INFO
+
+volumes:
+  venv_data:

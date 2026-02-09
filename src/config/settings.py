@@ -14,8 +14,10 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
+ALLOWED_HOSTS = [h for h in ALLOWED_HOSTS if h]
 
 CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="", cast=Csv())
+CSRF_TRUSTED_ORIGINS = [o for o in CSRF_TRUSTED_ORIGINS if o]
 
 ROOT_URLCONF = "config.urls"
 
@@ -42,10 +44,19 @@ INSTALLED_APPS = [
 ]
 
 if DEBUG:
-    INSTALLED_APPS += [
-        "django_extensions",
-        "debug_toolbar",
-    ]
+    try:
+        import django_extensions  # noqa: F401
+
+        INSTALLED_APPS += ["django_extensions"]
+    except ImportError:
+        pass
+
+    try:
+        import debug_toolbar  # noqa: F401
+
+        INSTALLED_APPS += ["debug_toolbar"]
+    except ImportError:
+        pass
 
 # =============================================================================
 # Middleware
@@ -62,7 +73,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-if DEBUG:
+if DEBUG and "debug_toolbar" in INSTALLED_APPS:
     MIDDLEWARE.insert(
         MIDDLEWARE.index("django.middleware.common.CommonMiddleware") + 1,
         "debug_toolbar.middleware.DebugToolbarMiddleware",

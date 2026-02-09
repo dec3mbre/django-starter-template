@@ -2,7 +2,7 @@
 name = "django-project"
 version = "0.1.0"
 description = "Django project"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "django",
     "python-decouple",
@@ -24,8 +24,9 @@ prod = [
 
 [tool.ruff]
 line-length = 120
-target-version = "py310"
+target-version = "py313"
 src = ["src"]
+extend-exclude = ["**/migrations/**"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "DJ"]

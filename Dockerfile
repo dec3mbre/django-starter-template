@@ -1,14 +1,14 @@
 # =============================================================================
 # Build stage
 # =============================================================================
-FROM python:3.12-slim AS builder
-
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
+FROM python:3.13-slim AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir uv
 
 WORKDIR /build
 
@@ -18,7 +18,7 @@ RUN uv sync --no-dev --group prod --no-install-project
 # =============================================================================
 # Runtime stage
 # =============================================================================
-FROM python:3.12-slim
+FROM python:3.13-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
