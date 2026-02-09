@@ -1,4 +1,4 @@
-.PHONY: run migrate install test lint shell superuser clean
+.PHONY: run migrate install clean
 
 run:
 	python manage.py runserver
@@ -8,20 +8,7 @@ migrate:
 	python manage.py migrate
 
 install:
-	pip install -r requirements/dev.txt
-
-test:
-	pytest
-
-lint:
-	ruff check .
-	ruff format .
-
-shell:
-	python manage.py shell_plus
-
-superuser:
-	python manage.py createsuperuser
+	pip install -r requirements.txt
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

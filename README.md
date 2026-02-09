@@ -30,7 +30,7 @@
    ```bash
    make install
    # или
-   pip install -r requirements/dev.txt
+   pip install -r requirements.txt
    ```
 
 3. Настроить окружение:
@@ -57,7 +57,4 @@
 - `make run` - Запуск dev-сервера
 - `make migrate` - Создание и применение миграций
 - `make install` - Установка зависимостей (dev)
-- `make test` - Запуск тестов
-- `make lint` - Проверка и форматирование кода (ruff)
-- `make superuser` - Создание суперпользователя
 - `make clean` - Очистка от кэша и временных файлов
