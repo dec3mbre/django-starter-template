@@ -1,14 +1,70 @@
-.PHONY: run migrate install clean
+.PHONY: run migrate sync clean lint format shell superuser collectstatic docker-up docker-down
+
+# ---------------------------------------------------------------------------
+# Development
+# ---------------------------------------------------------------------------
 
 run:
-	python manage.py runserver
+	uv run python manage.py runserver
+
+shell:
+	uv run python manage.py shell_plus
+
+superuser:
+	uv run python manage.py createsuperuser
+
+# ---------------------------------------------------------------------------
+# Database
+# ---------------------------------------------------------------------------
 
 migrate:
-	python manage.py makemigrations
-	python manage.py migrate
+	uv run python manage.py makemigrations
+	uv run python manage.py migrate
 
-install:
-	pip install -r requirements.txt
+# ---------------------------------------------------------------------------
+# Static
+# ---------------------------------------------------------------------------
+
+collectstatic:
+	uv run python manage.py collectstatic --noinput
+
+# ---------------------------------------------------------------------------
+# Code quality
+# ---------------------------------------------------------------------------
+
+lint:
+	uv run ruff check src/
+
+format:
+	uv run ruff format src/
+	uv run ruff check --fix src/
+
+# ---------------------------------------------------------------------------
+# Dependencies
+# ---------------------------------------------------------------------------
+
+sync:
+	uv sync
+
+lock:
+	uv lock
+
+# ---------------------------------------------------------------------------
+# Docker
+# ---------------------------------------------------------------------------
+
+docker-up:
+	docker compose up -d --build
+
+docker-down:
+	docker compose down
+
+docker-logs:
+	docker compose logs -f
+
+# ---------------------------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------------------------
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} +

@@ -1,5 +1,0 @@
-Django
-python-decouple
-dj-database-url
-Pillow
-django-extensions
