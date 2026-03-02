@@ -12,8 +12,8 @@ RUN pip install --no-cache-dir uv
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
-RUN uv sync --no-dev --group prod --no-install-project
+COPY pyproject.toml ./
+RUN uv lock && uv sync --no-dev --group prod --no-install-project
 
 # =============================================================================
 # Runtime stage

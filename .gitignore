@@ -124,7 +124,7 @@ Thumbs.db
 ## Project specific
 src/media/*
 !src/media/.gitkeep
-staticfiles/
+/static/
 *.sqlite3
 
 ## Secrets

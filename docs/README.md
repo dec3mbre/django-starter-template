@@ -12,6 +12,7 @@
 - **Custom User** (`AbstractUser`) из коробки
 - **WhiteNoise** — статика в production без nginx
 - **Docker** multi-stage + docker-compose (PostgreSQL 16)
+- **[django-unfold](https://github.com/unfoldadmin/django-unfold)** — современная админка
 - **ruff**, django-extensions, django-debug-toolbar
 
 ## Быстрый старт
