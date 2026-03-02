@@ -134,5 +134,8 @@ staticfiles/
 ## Tool caches
 .ruff_cache/
 
+## Lock files (template: install latest on clone)
+uv.lock
+
 ## Frontend (future-proofing)
 node_modules/
