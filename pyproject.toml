@@ -9,6 +9,7 @@ dependencies = [
     "dj-database-url",
     "pillow",
     "whitenoise",
+    "django-unfold",
 ]
 
 [dependency-groups]

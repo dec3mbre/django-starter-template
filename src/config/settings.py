@@ -32,6 +32,8 @@ AUTH_USER_MODEL = "core.User"
 # =============================================================================
 
 INSTALLED_APPS = [
+    "unfold",
+    "unfold.contrib.filters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -188,6 +190,32 @@ LOGGING = {
             "handlers": ["console"],
             "level": LOG_LEVEL,
             "propagate": False,
+        },
+    },
+}
+
+# =============================================================================
+# Unfold Admin
+# =============================================================================
+
+UNFOLD = {
+    "SITE_TITLE": "Admin",
+    "SITE_HEADER": "Admin",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "COLORS": {
+        "primary": {
+            "50": "236 253 245",
+            "100": "209 250 229",
+            "200": "167 243 208",
+            "300": "110 231 183",
+            "400": "52 211 153",
+            "500": "16 185 129",
+            "600": "5 150 105",
+            "700": "4 120 87",
+            "800": "6 95 70",
+            "900": "4 78 56",
+            "950": "2 44 34",
         },
     },
 }
