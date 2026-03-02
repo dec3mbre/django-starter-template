@@ -1,4 +1,4 @@
-.PHONY: run migrate sync lock clean lint format shell superuser collectstatic docker-up docker-down docker-logs
+.PHONY: run migrate sync lock clean lint format shell superuser startapp collectstatic docker-up docker-down docker-logs
 
 # ---------------------------------------------------------------------------
 # Development
@@ -12,6 +12,13 @@ shell:
 
 superuser:
 	uv run python manage.py createsuperuser
+
+startapp:
+	@if [ -z "$(name)" ]; then echo "Usage: make startapp name=blog"; exit 1; fi
+	@if [ -d "src/apps/$(name)" ]; then echo "Error: App '$(name)' already exists"; exit 1; fi
+	uv run python manage.py startapp $(name) src/apps/$(name)
+	@sed -i '' 's/name = "$(name)"/name = "apps.$(name)"/' src/apps/$(name)/apps.py
+	@echo "✅ App '$(name)' created in src/apps/$(name)"
 
 # ---------------------------------------------------------------------------
 # Database

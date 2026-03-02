@@ -62,8 +62,6 @@ docker compose exec web /app/.venv/bin/python manage.py createsuperuser
 ├── Dockerfile
 ├── docker-compose.yml
 ├── .env.example
-├── scripts/
-│   └── startapp.sh
 └── src/
     ├── apps/
     │   └── core/                # Custom User, базовые модели
@@ -91,6 +89,7 @@ docker compose exec web /app/.venv/bin/python manage.py createsuperuser
 | `make format`        | Форматирование кода (ruff)     |
 | `make sync`          | Установка зависимостей         |
 | `make lock`          | Обновление lockfile            |
+| `make startapp name=blog` | Создание нового приложения |
 | `make collectstatic` | Сборка статики                 |
 | `make docker-up`     | Запуск контейнеров             |
 | `make docker-down`   | Остановка контейнеров          |
@@ -102,7 +101,7 @@ docker compose exec web /app/.venv/bin/python manage.py createsuperuser
 ## Новое приложение
 
 ```bash
-./scripts/startapp.sh blog
+make startapp name=blog
 ```
 
 1. Добавить `"apps.blog"` в `INSTALLED_APPS` в `src/config/settings.py`
