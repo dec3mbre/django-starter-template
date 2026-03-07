@@ -33,4 +33,4 @@ extend-exclude = ["**/migrations/**"]
 select = ["E", "F", "I", "B", "UP", "DJ"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["apps", "config"]
+known-first-party = ["apps", "config", "core"]

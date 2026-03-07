@@ -5,17 +5,30 @@
 This is a Django project using `src/`-layout: all Python source code lives under `src/`, separated from root config files (`manage.py`, `pyproject.toml`, `Dockerfile`, etc.).
 
 - **`src/config/`** — Django settings, root URL conf (`config.urls`), WSGI/ASGI entry points.
-- **`src/apps/`** — Django apps. Each app is referenced as `apps.<name>` (e.g. `apps.core`).
+- **`src/core/`** — Infrastructure package (**not** a Django app). Houses cross-cutting concerns: `BaseModel`, exceptions, middleware, utilities. Import as `core.*`.
+- **`src/apps/`** — Django apps. Each app is referenced as `apps.<name>` (e.g. `apps.users`).
 - **`src/templates/`** — Project-level templates. `base.html` provides the layout shell.
 - **`src/static/`** — Project-level static assets (`css/`, `js/`, `images/`).
 - **`src/media/`** — User-uploaded files (not committed).
 
-`manage.py` adds `src/` to `sys.path`, so imports use `apps.*` and `config.*` — never `src.apps.*`.
+`manage.py` adds `src/` to `sys.path`, so imports use `apps.*`, `config.*`, and `core.*` — never `src.apps.*`.
+
+### core/ vs apps/ — what goes where
+
+| `src/core/` (infrastructure) | `src/apps/<name>/` (business logic) |
+|---|---|
+| `BaseModel` (abstract), exceptions, middleware | Models, views, serializers, admin |
+| Shared utilities, helpers | App-specific URLs, templates |
+| No migrations, no Django AppConfig | Has `apps.py`, registered in `INSTALLED_APPS` |
+| Imported as `core.models`, `core.exceptions` | Imported as `apps.<name>.models` |
 
 ## Key Conventions
 
 ### Custom User Model
-`AUTH_USER_MODEL = "core.User"` — a custom `AbstractUser` subclass in `src/apps/core/models.py`. All user-related fields go here. Never use `django.contrib.auth.models.User` directly.
+`AUTH_USER_MODEL = "users.User"` — a custom `AbstractUser` subclass in `src/apps/users/models.py`. All user-related fields go here. Never use `django.contrib.auth.models.User` directly.
+
+### BaseModel
+All new models (except User) should inherit from `core.models.BaseModel`, which provides UUID primary key, `created_at`, and `updated_at` fields.
 
 ### Creating a New App
 ```bash
@@ -26,7 +39,7 @@ This creates the app in `src/apps/<appname>/` and patches `apps.py` to set `name
 2. Wire URLs in `src/config/urls.py`: `path("<appname>/", include("apps.<appname>.urls"))`
 
 ### Admin
-Uses **django-unfold** — admin classes must inherit from `unfold.admin.ModelAdmin` (not plain `admin.ModelAdmin`). See `src/apps/core/admin.py` for the pattern with `UserAdmin`.
+Uses **django-unfold** — admin classes must inherit from `unfold.admin.ModelAdmin` (not plain `admin.ModelAdmin`). See `src/apps/users/admin.py` for the pattern with `UserAdmin`.
 
 ### Configuration & Environment
 Settings use **python-decouple** (`config()`) — not `os.environ`. Database URL is parsed via `dj-database-url`. Key env vars: `SECRET_KEY` (required), `DEBUG`, `DATABASE_URL`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`, `LOG_LEVEL`.
@@ -55,7 +68,7 @@ All commands use **uv** as the package manager (not pip). Run Django management 
 ## Code Quality
 
 - **Ruff** for linting and formatting. Config in `pyproject.toml`: line-length 120, Python 3.13 target, rules `E, F, I, B, UP, DJ`. Migrations are excluded.
-- Import sorting: `apps` and `config` are `known-first-party`.
+- Import sorting: `apps`, `config`, and `core` are `known-first-party`.
 
 ## Docker
 
