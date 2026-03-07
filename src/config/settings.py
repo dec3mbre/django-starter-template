@@ -25,7 +25,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"
 
 # =============================================================================
 # Apps
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third-party
     # Local
-    "apps.core",
+    "apps.users",
 ]
 
 if DEBUG:
