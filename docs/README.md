@@ -156,3 +156,13 @@ Django [рекомендует](https://docs.djangoproject.com/en/stable/topics/
 
 Отделяет код от конфигурации в корне. Стандартная практика для Python-проектов.
 </details>
+
+## Документация
+
+- [Архитектура проекта](architecture.md)
+- [Руководство для разработчиков](CONTRIBUTING.md)
+- **ADR (Architecture Decision Records):**
+  - [001 — src/-layout](adr/001-src-layout.md)
+  - [002 — Кастомная модель User](adr/002-custom-user-model.md)
+  - [003 — UUID первичные ключи](adr/003-uuid-primary-keys.md)
+  - [004 — Сервисный слой](adr/004-service-layer.md)
