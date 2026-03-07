@@ -133,6 +133,7 @@ src/media/*
 
 ## Tool caches
 .ruff_cache/
+.serena/
 
 ## Lock files (template: install latest on clone)
 uv.lock
