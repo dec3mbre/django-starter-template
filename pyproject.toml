@@ -7,7 +7,6 @@ dependencies = [
     "django",
     "python-decouple",
     "dj-database-url",
-    "pillow",
     "whitenoise",
     "django-unfold",
 ]
@@ -16,6 +15,8 @@ dependencies = [
 dev = [
     "django-extensions",
     "django-debug-toolbar",
+    "pytest",
+    "pytest-django",
     "ruff",
 ]
 prod = [
@@ -34,3 +35,9 @@ select = ["E", "F", "I", "B", "UP", "DJ"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["apps", "config", "core"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+pythonpath = ["src"]
+testpaths = ["src"]
+python_files = ["test_*.py", "tests.py"]

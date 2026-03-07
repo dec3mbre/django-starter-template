@@ -6,7 +6,8 @@
 git clone <repo-url> && cd django-starter-template
 uv sync                    # установить зависимости
 cp .env.example .env       # настроить переменные окружения
-make migrate               # создать и применить миграции
+make makemigrations        # создать миграции
+make migrate               # применить миграции
 make superuser             # создать суперпользователя
 make run                   # запустить dev-сервер
 ```
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("blog/", include("apps.blog.urls")),
-    path("", include("apps.users.urls")),
+    path("", TemplateView.as_view(template_name="home.html"), name="home"),
 ]
 ```
 
@@ -70,6 +71,7 @@ src/apps/blog/
 ### 5. Создать и применить миграции
 
 ```bash
+make makemigrations
 make migrate
 ```
 
@@ -292,11 +294,13 @@ uv lock
 |---|---|
 | `make run` | Запустить dev-сервер |
 | `make shell` | Django shell (`shell_plus`) |
-| `make migrate` | `makemigrations` + `migrate` |
+| `make makemigrations` | Создать миграции |
+| `make migrate` | Применить миграции |
 | `make superuser` | Создать суперпользователя |
 | `make startapp name=X` | Создать приложение в `src/apps/X/` |
 | `make lint` | Запустить ruff check |
 | `make format` | Автоформатирование ruff |
+| `make test` | Запустить тесты (pytest) |
 | `make collectstatic` | Собрать статику |
 | `make docker-up` | Запустить Docker (PostgreSQL + Django) |
 | `make docker-down` | Остановить Docker |

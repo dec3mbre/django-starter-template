@@ -4,14 +4,16 @@
 
 ```
 ├── manage.py                  ← точка входа, добавляет src/ в sys.path
-├── pyproject.toml             ← зависимости, настройки ruff
+├── pyproject.toml             ← зависимости, настройки ruff, pytest
 ├── Makefile                   ← команды разработки
 ├── Dockerfile                 ← multi-stage сборка
 ├── docker-compose.yml         ← PostgreSQL 16 + Django
 ├── docker-compose.override.yml← переопределения для разработки
 ├── .env / .env.example        ← переменные окружения
+├── .pre-commit-config.yaml    ← ruff pre-commit hooks
 │
 └── src/                       ← весь Python-код
+    ├── conftest.py            ← pytest fixtures
     ├── config/                ← настройки Django
     │   ├── settings.py
     │   ├── urls.py
@@ -21,16 +23,17 @@
     ├── core/                  ← инфраструктура (НЕ Django-приложение)
     │   ├── models.py          ← BaseModel (UUID PK + timestamps)
     │   ├── exceptions.py      ← иерархия исключений
-    │   ├── middleware.py       ← RequestLoggingMiddleware
-    │   └── utils/             ← общие утилиты
+    │   ├── middleware.py       ← ExceptionHandler + RequestLogging
+    │   └── tests/             ← тесты инфраструктуры
     │
     ├── apps/                  ← Django-приложения
     │   └── users/             ← кастомная модель User
     │       ├── models.py
-    │       ├── views.py
-    │       ├── urls.py
     │       ├── admin.py
     │       ├── apps.py
+    │       ├── urls.py
+    │       ├── views.py
+    │       ├── tests.py
     │       └── migrations/
     │
     ├── templates/             ← шаблоны (base.html, home.html)
@@ -48,7 +51,7 @@
 
 ```python
 SECRET_KEY = config("SECRET_KEY")
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 DATABASES = {
     "default": config(
         "DATABASE_URL",
@@ -66,8 +69,7 @@ DATABASES = {
 |---|---|
 | `core.models` | `BaseModel` — абстрактная модель с UUID PK и timestamps |
 | `core.exceptions` | Иерархия бизнес-исключений |
-| `core.middleware` | `RequestLoggingMiddleware` |
-| `core.utils` | Общие утилиты |
+| `core.middleware` | `ExceptionHandlerMiddleware`, `RequestLoggingMiddleware` |
 
 ### apps/ — бизнес-логика
 
@@ -127,10 +129,9 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ["-created_at"]
 ```
 
-Все новые модели наследуют `BaseModel`. Исключение — модель `User`, которая наследует `AbstractUser` и использует стандартный `BigAutoField`.
+Все новые модели наследуют `BaseModel` и определяют свой `ordering` при необходимости. Исключение — модель `User`, которая наследует `AbstractUser` и использует стандартный `BigAutoField`.
 
 ### Исключения
 
@@ -159,14 +160,24 @@ raise NotFoundError("Статья не найдена", extra={"article_id": art
 INFO core.middleware GET /admin/ 200 (12.3ms)
 ```
 
-Middleware определён в `core.middleware`, но не добавлен в `MIDDLEWARE` по умолчанию. Для активации добавьте в `src/config/settings.py`:
+### ExceptionHandlerMiddleware
 
-```python
-MIDDLEWARE = [
-    ...
-    "core.middleware.RequestLoggingMiddleware",
-]
+Конвертирует бизнес-исключения из `core.exceptions` в HTTP-ответы:
+
+| Исключение | HTTP-статус |
+|---|---|
+| `NotFoundError` | 404 |
+| `ValidationError` | 400 |
+| `PermissionDeniedError` | 403 |
+| `ApplicationError` (fallback) | 400 |
+
+Для AJAX/JSON-запросов возвращает JSON:
+
+```json
+{"error": "Resource not found.", "extra": {"id": 42}}
 ```
+
+Оба middleware подключены в `MIDDLEWARE` по умолчанию.
 
 ## Модель User
 
@@ -263,7 +274,7 @@ CSRF_COOKIE_SECURE = True
 | Переменная | По умолчанию | Описание |
 |---|---|---|
 | `SECRET_KEY` | — | **Обязательно**. Секретный ключ Django |
-| `DEBUG` | `True` | Режим отладки |
+| `DEBUG` | `False` | Режим отладки |
 | `ALLOWED_HOSTS` | — | Разрешённые хосты (через запятую) |
 | `DATABASE_URL` | `sqlite:///db.sqlite3` | URL базы данных |
 | `CSRF_TRUSTED_ORIGINS` | — | Доверенные origins для CSRF (через запятую) |

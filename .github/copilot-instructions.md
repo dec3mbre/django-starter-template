@@ -56,10 +56,12 @@ Settings use **python-decouple** (`config()`) — not `os.environ`. Database URL
 |---|---|
 | Install deps | `uv sync` |
 | Run dev server | `make run` |
-| Migrations | `make migrate` (runs both `makemigrations` + `migrate`) |
+| Create migrations | `make makemigrations` |
+| Apply migrations | `make migrate` |
 | Django shell | `make shell` (uses `shell_plus`) |
 | Lint | `make lint` |
 | Format | `make format` |
+| Run tests | `make test` |
 | Add dependency | `uv add <package>` |
 | Docker up | `make docker-up` |
 

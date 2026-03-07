@@ -1,4 +1,4 @@
-.PHONY: run migrate sync lock clean lint format shell superuser startapp collectstatic docker-up docker-down docker-logs
+.PHONY: run makemigrations migrate sync lock clean lint format test shell superuser startapp collectstatic docker-up docker-down docker-logs
 
 # ---------------------------------------------------------------------------
 # Development
@@ -24,8 +24,10 @@ startapp:
 # Database
 # ---------------------------------------------------------------------------
 
-migrate:
+makemigrations:
 	uv run python manage.py makemigrations
+
+migrate:
 	uv run python manage.py migrate
 
 # ---------------------------------------------------------------------------
@@ -45,6 +47,9 @@ lint:
 format:
 	uv run ruff format src/
 	uv run ruff check --fix src/
+
+test:
+	uv run pytest
 
 # ---------------------------------------------------------------------------
 # Dependencies

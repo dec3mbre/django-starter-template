@@ -30,6 +30,7 @@ cp .env.example .env
 uv run python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
 # Миграции + суперпользователь
+make makemigrations
 make migrate
 make superuser
 
@@ -63,18 +64,22 @@ docker compose exec web /app/.venv/bin/python manage.py createsuperuser
 ├── docker-compose.yml
 ├── .env.example
 └── src/
-    ├── apps/
-    │   └── core/                # Custom User, базовые модели
-    ├── config/
+    ├── config/                # Настройки Django
     │   ├── settings.py
     │   ├── urls.py
     │   ├── wsgi.py
     │   └── asgi.py
+    ├── core/                  # Инфраструктура (НЕ Django-приложение)
+    │   ├── models.py
+    │   ├── exceptions.py
+    │   └── middleware.py
+    ├── apps/
+    │   └── users/             # Кастомная модель User
+    ├── templates/
+    │   ├── base.html
+    │   └── home.html
     ├── static/
-    ├── media/
-    └── templates/
-        ├── base.html
-        └── home.html
+    └── media/
 ```
 
 ## Makefile
@@ -82,11 +87,13 @@ docker compose exec web /app/.venv/bin/python manage.py createsuperuser
 | Команда              | Описание                       |
 | -------------------- | ------------------------------ |
 | `make run`           | Запуск dev-сервера             |
-| `make migrate`       | Создание и применение миграций |
+| `make makemigrations`| Создание миграций              |
+| `make migrate`       | Применение миграций            |
 | `make superuser`     | Создание суперпользователя     |
 | `make shell`         | Django shell_plus              |
 | `make lint`          | Проверка кода (ruff)           |
 | `make format`        | Форматирование кода (ruff)     |
+| `make test`          | Запуск тестов (pytest)         |
 | `make sync`          | Установка зависимостей         |
 | `make lock`          | Обновление lockfile            |
 | `make startapp name=blog` | Создание нового приложения |
@@ -115,7 +122,7 @@ make startapp name=blog
 | Переменная               | По умолчанию           | Описание            |
 | ------------------------ | ---------------------- | ------------------- |
 | `SECRET_KEY`             | —                      | **Обязательно**     |
-| `DEBUG`                  | `True`                 | Режим отладки       |
+| `DEBUG`                  | `False`                | Режим отладки       |
 | `ALLOWED_HOSTS`          | —                      | Через запятую       |
 | `DATABASE_URL`           | `sqlite:///db.sqlite3` | URL базы данных     |
 | `CSRF_TRUSTED_ORIGINS`   | —                      | Через запятую       |
@@ -155,6 +162,12 @@ Django [рекомендует](https://docs.djangoproject.com/en/stable/topics/
 <summary><b>Почему <code>src/</code> layout?</b></summary>
 
 Отделяет код от конфигурации в корне. Стандартная практика для Python-проектов.
+</details>
+
+<details>
+<summary><b>Почему <code>uv.lock</code> не в репозитории?</b></summary>
+
+Шаблон намеренно не коммитит `uv.lock`, чтобы при клонировании `uv sync` устанавливал актуальные версии зависимостей. **После** того как вы начали строить свой проект на основе шаблона, рекомендуется убрать `uv.lock` из `.gitignore` и закоммитить его — это обеспечит reproducible builds.
 </details>
 
 ## Документация
